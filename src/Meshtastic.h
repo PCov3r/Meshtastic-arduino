@@ -85,4 +85,7 @@ void set_encrypted_callback(void (*callback)(uint32_t from, uint32_t to,  uint8_
 // Send a text message with *text* as payload, to a destination node (optional), on a certain channel (optional).
 bool mt_send_text(const char * text, uint32_t dest = BROADCAST_ADDR, uint8_t channel_index = 0);
 
+// Send environment telemetry *m*
+bool mt_send_telemetry(meshtastic_Telemetry m);
+
 #endif

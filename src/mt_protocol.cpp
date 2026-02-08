@@ -130,6 +130,28 @@ bool mt_send_text(const char * text, uint32_t dest, uint8_t channel_index) {
   return _mt_send_toRadio(toRadio);
 }
 
+bool mt_send_telemetry(meshtastic_Telemetry m) {
+  meshtastic_MeshPacket meshPacket = meshtastic_MeshPacket_init_default;
+  meshPacket.which_payload_variant = meshtastic_MeshPacket_decoded_tag;
+  meshPacket.id = random(0x7FFFFFFF);
+  meshPacket.decoded.portnum = meshtastic_PortNum_TELEMETRY_APP;
+  meshPacket.to = BROADCAST_ADDR;
+  meshPacket.channel = 0;
+  meshPacket.want_ack = true;
+  meshPacket.priority = meshtastic_MeshPacket_Priority_HIGH;
+  pb_ostream_t stream;
+  stream = pb_ostream_from_buffer(meshPacket.decoded.payload.bytes, sizeof(meshPacket.decoded.payload.bytes));
+  pb_encode(&stream, &meshtastic_Telemetry_msg, &m);
+  meshPacket.decoded.payload.size = stream.bytes_written;
+
+  meshtastic_ToRadio toRadio = meshtastic_ToRadio_init_default;
+  toRadio.which_payload_variant = meshtastic_ToRadio_packet_tag;
+  toRadio.packet = meshPacket;
+
+  Serial.println("Sending telemetry");
+  return _mt_send_toRadio(toRadio);
+}
+
 bool mt_send_heartbeat() {
 
   d("Sending heartbeat");
