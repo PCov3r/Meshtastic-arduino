@@ -97,7 +97,7 @@ void read_sensors(envMetrics& e) {
   e.temperature = 16.5; 
 }
 
-void send_telemetry(const EnvMetrics& e) {
+void send_telemetry(const envMetrics& e) {
 
   meshtastic_Telemetry m = meshtastic_Telemetry_init_zero;
   m.which_variant  = meshtastic_Telemetry_environment_metrics_tag;
